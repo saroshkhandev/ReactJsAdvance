@@ -18,7 +18,7 @@ const passwordReducer = (state, action) => {
   if (action.type === "user_input") {
     return { value: action.val, isValid: action.val.trim().length > 6 };
   }
-  if(action.type === "input_blur") {
+  if (action.type === "input_blur") {
     return { value: state.value, isValid: state.value.trim().length > 6 };
   }
   return { value: "", isValid: false };
@@ -43,34 +43,35 @@ const Login = (props) => {
     console.log("EFFECT Running");
   }, []);
 
-  // useEffect(() => {
-  //   const identifier = setTimeout(() => {
-  //     console.log("Checking form Validity");
-  //     setFormIsValid(
-  //       enteredEmail.includes("@") && enteredPassword.trim().length > 6
-  //     );
-  //   }, 500);
-  //   // so this return statement is the clearup function which executes in the very beginning of the useEffect()
-  //   // hook except at the time of initialization.
-  //   return () => {
-  //     console.log("CleanUp");
-  //     clearTimeout(identifier);
-  //   };
-  // }, [setFormIsValid, enteredEmail, enteredPassword]);
+  const { isValid: emailIsValid } = emailState;
+  const { isValid: passwordIsValid } = passwordState;
+
+  useEffect(() => {
+    const identifier = setTimeout(() => {
+      console.log("Checking form Validity");
+      setFormIsValid(emailIsValid && passwordIsValid);
+    }, 500);
+    // so this return statement is the clearup function which executes in the very beginning of the useEffect()
+    // hook except at the time of initialization.
+    return () => {
+      console.log("CleanUp");
+      clearTimeout(identifier);
+    };
+  }, [emailIsValid, passwordIsValid]);
 
   const emailChangeHandler = (event) => {
     // setEnteredEmail(event.target.value);
     dispatchEmail({ type: "user_input", val: event.target.value });
-    setFormIsValid(
-      event.target.value.includes("@") && passwordState.isValid
-    );
+    // setFormIsValid(
+    //   event.target.value.includes("@") && passwordState.isValid
+    // );
   };
 
   const passwordChangeHandler = (event) => {
     // setEnteredPassword(event.target.value);
     dispatchPassword({ type: "user_input", val: event.target.value });
 
-    setFormIsValid(emailState.isValid && event.target.value.trim().length > 6);
+    // setFormIsValid(emailState.isValid && event.target.value.trim().length > 6);
   };
 
   const validateEmailHandler = () => {
